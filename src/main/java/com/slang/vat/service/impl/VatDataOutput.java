@@ -20,10 +20,15 @@ public class VatDataOutput implements DataOutput {
 
     @Override
     public void display() {
-        System.out.println(itemsToDisplay + " EU countries with the lowest standard VAT rate: ");
+        System.out.println("--------------------------------------------------- \n" +
+                "------------------- R E S U L T ------------------- \n" +
+                itemsToDisplay + " EU countries with the lowest standard VAT rate: ");
         print(vatInfos::pollFirst);
-        System.out.println(itemsToDisplay + " EU countries with the highest standard VAT rate: ");
+        System.out.println("--------------------------------------------------- \n" +
+                itemsToDisplay + " EU countries with the highest standard VAT rate: ");
         print(vatInfos::pollLast);
+        System.out.println("---------------------------------------------------");
+        System.out.println("---------------------------------------------------");
     }
 
     private void print(Supplier<VatInfo> selector) {
