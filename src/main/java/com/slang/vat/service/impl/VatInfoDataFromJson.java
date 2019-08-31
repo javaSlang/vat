@@ -13,6 +13,11 @@ import java.util.TreeSet;
 
 public class VatInfoDataFromJson implements VatInfoData {
 
+    private static final String RATES_ITEM = "rates";
+    private static final String COUNTRY_ITEM = "name";
+    private static final String PERIODS_ITEM = "periods";
+    private static final String STANDARD_ITEM = "standard";
+
     private final RawData rawJson;
 
     public VatInfoDataFromJson(RawData rawJson) {
@@ -21,16 +26,25 @@ public class VatInfoDataFromJson implements VatInfoData {
 
     @Override
     public TreeSet<VatInfo> parse() {
-        JsonObject jsonObject = new JsonParser().parse(rawJson.fetch()).getAsJsonObject();
-        JsonArray rates = jsonObject.getAsJsonArray("rates");
+        JsonObject initData = new JsonParser().parse(rawJson.fetch()).getAsJsonObject();
+        JsonArray rates = initData.getAsJsonArray(RATES_ITEM);
         TreeSet<VatInfo> vatInfos = new TreeSet<>();
-        for (JsonElement elem : rates) {
-            String country = elem.getAsJsonObject().get("name").getAsString();
-            JsonArray periods = elem.getAsJsonObject().getAsJsonArray("periods");
-            JsonElement jsonElement = periods.get(0);
-            BigDecimal vat = jsonElement.getAsJsonObject().get("rates").getAsJsonObject().get("standard").getAsBigDecimal();
-            vatInfos.add(new VatInfo(country, vat));
+        for (JsonElement rateElement : rates) {
+            processVatData(rateElement, vatInfos);
         }
         return vatInfos;
+    }
+
+    private void processVatData(JsonElement rateElement, TreeSet<VatInfo> vatInfos) {
+        String country = rateElement.getAsJsonObject().get(COUNTRY_ITEM).getAsString();
+        JsonArray periods = rateElement.getAsJsonObject().getAsJsonArray(PERIODS_ITEM);
+        if (periods.size() == 0) {
+            System.err.println("There are no VAT data set for " + country + " -> skipping...");
+        } else if (periods.size() > 1) {
+            System.out.println(country + " contains more than one VAT data set... proceeding with the latest one");
+        }
+        JsonElement vatInfoDataSet = periods.get(0);
+        BigDecimal vat = vatInfoDataSet.getAsJsonObject().get(RATES_ITEM).getAsJsonObject().get(STANDARD_ITEM).getAsBigDecimal();
+        vatInfos.add(new VatInfo(country, vat));
     }
 }
