@@ -6,12 +6,15 @@ import com.slang.vat.service.impl.VatInfoDataFromJson;
 
 public class AppRunner {
 
+    private static final String VAT_SOURCE_URL = "http://jsonvat.com";
+    private static final int ITEMS_TO_DISPLAY = 3;
+
     public static void main(String[] args) {
         new VatDataOutput(
                 new VatInfoDataFromJson(
-                        new RawDataFromUrl("http://jsonvat.com")
+                        new RawDataFromUrl(VAT_SOURCE_URL)
                 ),
-                3
+                ITEMS_TO_DISPLAY
         ).display();
     }
 
