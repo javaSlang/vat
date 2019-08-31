@@ -27,6 +27,7 @@ public class VatInfoDataFromJson implements VatInfoData {
 
     @Override
     public TreeSet<VatInfo> parse() {
+        // relying on json structure from upstream
         JsonObject initData = new JsonParser().parse(rawJson.fetch()).getAsJsonObject();
         JsonArray rates = initData.getAsJsonArray(RATES_ITEM);
         TreeSet<VatInfo> vatInfos = new TreeSet<>();
