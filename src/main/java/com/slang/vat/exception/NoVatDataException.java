@@ -10,7 +10,7 @@ public class NoVatDataException extends Exception {
 
     @Override
     public String getMessage() {
-        return "There are no VAT data set for " + country + " -> skipping...";
+        return "There are no VAT data sets for " + country + " -> skipping...";
     }
 
 }
