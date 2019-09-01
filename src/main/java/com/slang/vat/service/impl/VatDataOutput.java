@@ -32,9 +32,21 @@ public class VatDataOutput implements DataOutput {
     @Override
     public void display() {
         LOGGER.debug("Displaying the results...");
-        printServiceLine(format(SERVICE_LINE_PATTERN, RESULT_DIVIDING_LINE, itemsToDisplay, format(OUTPUT_TEXT_PATTERN, "lowest")));
+        printWholeOutput();
+    }
+
+    private void printWholeOutput() {
+        printServiceLine(
+                format(SERVICE_LINE_PATTERN,
+                        RESULT_DIVIDING_LINE, itemsToDisplay, format(OUTPUT_TEXT_PATTERN, "lowest")
+                )
+        );
         printSelectedResults(vatInfos::pollFirst);
-        printServiceLine(format(SERVICE_LINE_PATTERN, DIVIDING_LINE, itemsToDisplay, format(OUTPUT_TEXT_PATTERN, "highest")));
+        printServiceLine(
+                format(SERVICE_LINE_PATTERN,
+                        DIVIDING_LINE, itemsToDisplay, format(OUTPUT_TEXT_PATTERN, "highest")
+                )
+        );
         printSelectedResults(vatInfos::pollLast);
         printServiceLine(DIVIDING_LINE);
     }
