@@ -33,21 +33,24 @@ public class VatInfoDataFromJson implements VatInfoData {
     public TreeSet<VatInfo> parse() {
         // relying on json structure from upstream
         JsonObject initData = new JsonParser().parse(rawJson.fetch()).getAsJsonObject();
-        JsonArray rates = initData.getAsJsonArray(RATES_ITEM);
+        JsonArray ratesByCountries = initData.getAsJsonArray(RATES_ITEM);
+        LOGGER.debug("Initially got data for {} countries", ratesByCountries.size());
         TreeSet<VatInfo> vatInfos = new TreeSet<>();
-        for (JsonElement rateElement : rates) {
+        for (JsonElement rateElement : ratesByCountries) {
             try {
                 processVatData(rateElement, vatInfos);
             } catch (NoVatDataException e) {
                 LOGGER.error(e.getMessage());
             }
         }
+        LOGGER.debug("Successfully parsed {} VAT data sets", vatInfos.size());
         return vatInfos;
     }
 
     void processVatData(JsonElement rateElement, TreeSet<VatInfo> vatInfos) throws NoVatDataException {
         String country = rateElement.getAsJsonObject().get(COUNTRY_ITEM).getAsString();
         JsonArray periods = rateElement.getAsJsonObject().getAsJsonArray(PERIODS_ITEM);
+        LOGGER.debug("Parsing raw data for {}, got data for {} period(-s)", country, periods.size());
         if (periods.size() == 0) {
             throw new NoVatDataException(country);
         } else if (periods.size() > 1) {
@@ -55,6 +58,8 @@ public class VatInfoDataFromJson implements VatInfoData {
         }
         JsonElement vatInfoDataSet = periods.get(0);
         BigDecimal vat = vatInfoDataSet.getAsJsonObject().get(RATES_ITEM).getAsJsonObject().get(STANDARD_ITEM).getAsBigDecimal();
-        vatInfos.add(new VatInfo(country, vat));
+        VatInfo vatInfo = new VatInfo(country, vat);
+        LOGGER.debug("Parsed: {}", vatInfo);
+        vatInfos.add(vatInfo);
     }
 }
