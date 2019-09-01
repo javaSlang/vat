@@ -8,11 +8,15 @@ import com.slang.vat.domain.VatInfo;
 import com.slang.vat.exception.NoVatDataException;
 import com.slang.vat.service.RawData;
 import com.slang.vat.service.VatInfoData;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.math.BigDecimal;
 import java.util.TreeSet;
 
 public class VatInfoDataFromJson implements VatInfoData {
+
+    private static final Logger LOGGER = LogManager.getLogger(VatInfoDataFromJson.class);
 
     private static final String RATES_ITEM = "rates";
     static final String COUNTRY_ITEM = "name";
@@ -35,7 +39,7 @@ public class VatInfoDataFromJson implements VatInfoData {
             try {
                 processVatData(rateElement, vatInfos);
             } catch (NoVatDataException e) {
-                System.out.println(e.getMessage());
+                LOGGER.error(e.getMessage());
             }
         }
         return vatInfos;
@@ -47,7 +51,7 @@ public class VatInfoDataFromJson implements VatInfoData {
         if (periods.size() == 0) {
             throw new NoVatDataException(country);
         } else if (periods.size() > 1) {
-            System.out.println(country + " contains more than one VAT data set... proceeding with the latest one");
+            LOGGER.debug(country + " contains more than one VAT data set... proceeding with the latest one");
         }
         JsonElement vatInfoDataSet = periods.get(0);
         BigDecimal vat = vatInfoDataSet.getAsJsonObject().get(RATES_ITEM).getAsJsonObject().get(STANDARD_ITEM).getAsBigDecimal();
