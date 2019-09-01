@@ -34,7 +34,7 @@ public class VatInfoDataFromJsonTest {
         try {
             vatFromJson.processVatData(mockedJsonElement, new TreeSet<>());
         } catch (NoVatDataException e) {
-            assertEquals("There are no VAT data set for " + TEST_COUNTRY + " -> skipping...", e.getMessage());
+            assertEquals("There are no VAT data sets for " + TEST_COUNTRY + " -> skipping...", e.getMessage());
             throw e;
         }
     }
