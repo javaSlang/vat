@@ -59,7 +59,7 @@ public class VatInfoDataFromJson implements VatInfoData {
         JsonElement vatInfoDataSet = periods.get(0);
         BigDecimal vat = vatInfoDataSet.getAsJsonObject().get(RATES_ITEM).getAsJsonObject().get(STANDARD_ITEM).getAsBigDecimal();
         VatInfo vatInfo = new VatInfo(country, vat);
-        LOGGER.debug("Parsed: {}", vatInfo);
+        LOGGER.debug("Parsed - {}", vatInfo);
         vatInfos.add(vatInfo);
     }
 }
