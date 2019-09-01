@@ -54,7 +54,7 @@ public class VatInfoDataFromJson implements VatInfoData {
         if (periods.size() == 0) {
             throw new NoVatDataException(country);
         } else if (periods.size() > 1) {
-            LOGGER.debug(country + " contains more than one VAT data set... proceeding with the latest one");
+            LOGGER.debug("{} contains more than one VAT data set... proceeding with the latest one", country);
         }
         JsonElement vatInfoDataSet = periods.get(0);
         BigDecimal vat = vatInfoDataSet.getAsJsonObject().get(RATES_ITEM).getAsJsonObject().get(STANDARD_ITEM).getAsBigDecimal();
